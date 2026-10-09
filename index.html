@@ -6,11 +6,11 @@
 <!--
   SEGURIDAD
   - Content-Security-Policy: solo permite cargar recursos de los orígenes listados.
-    Si cambias la URL de n8n, actualízala aquí (connect-src y frame-src).
+    Si cambias la URL de n8n, actualízala aquí (connect-src).
   - El script propio está autorizado por su hash (sha256). Si editas el script final de
     la página, hay que recalcular el hash o el navegador lo bloqueará.
 -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Opd1GnR1etIObkNDl25zOrVo2hp0P2R2thKFqIMhPL8=' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://proyecto-agente.app.n8n.cloud; frame-src https://proyecto-agente.app.n8n.cloud; base-uri 'none'; form-action 'none'; object-src 'none'; manifest-src 'self'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-IcN4PHE14B3DokNvwTw7Qu6Yf4XfLw1MGSOLvasp05Q=' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://proyecto-agente.app.n8n.cloud; frame-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; manifest-src 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="format-detection" content="telephone=no">
 <title>Yuri Guerra · AI Agente Consulting</title>
@@ -176,12 +176,17 @@ section { padding: 5rem 0; }
 /* Formulario */
 .solicitud { display: grid; grid-template-columns: 1fr 1.35fr; gap: 3rem; align-items: start; }
 .solicitud .lado p { color: var(--gris); }
-.marco-form { background: var(--blanco); border: 1px solid var(--linea); border-radius: 18px; overflow: hidden; }
-.marco-form iframe { display: block; width: 100%; height: 1180px; border: 0; }
-.alternativa { font-size: .95rem; padding: .9rem 1.1rem; border-top: 1px solid var(--linea); background: var(--papel); margin: 0; max-width: none; }
+.tarjeta-form { background: var(--pino); color: var(--blanco); border-radius: 22px; padding: clamp(1.75rem, 4vw, 2.75rem); }
+.tarjeta-form h3 { font-size: 1.6rem; font-weight: 800; margin-bottom: .75rem; }
+.tarjeta-form p { color: rgba(255,255,255,.88); }
+.campos { list-style: none; margin: 1.5rem 0 2rem; padding: 0; border-top: 1px solid rgba(255,255,255,.2); }
+.campos li { padding: .7rem 0 .7rem 1.9rem; border-bottom: 1px solid rgba(255,255,255,.2); position: relative; }
+.campos li::before { content: ""; position: absolute; left: .2rem; top: 1.05rem; width: .7rem; height: .7rem; border-radius: 50%; background: var(--ocre); }
+.tarjeta-form .boton { font-size: 1.1rem; padding: 1rem 1.5rem; }
+.nota-form { font-size: .92rem; margin: 1.25rem 0 0; }
 .lista-datos { padding-left: 1.2rem; margin: 0 0 1rem; color: var(--gris); }
 .lista-datos li { margin-bottom: .35rem; }
-@media (max-width: 880px) { .solicitud { grid-template-columns: 1fr; } .marco-form iframe { height: 1300px; } }
+@media (max-width: 880px) { .solicitud { grid-template-columns: 1fr; } }
 
 /* Pie */
 .pie { background: var(--tinta); color: rgba(255,255,255,.85); padding: 3rem 0; font-size: .95rem; }
@@ -341,19 +346,23 @@ section { padding: 5rem 0; }
         <p>Detalles en la <a href="privacidad.html">política de privacidad</a>, conforme a la Ley N.° 29733.</p>
       </div>
 
-      <div class="marco-form">
-        <!-- El formulario vive en n8n (otro dominio). sandbox limita lo que puede hacer el iframe;
-             allow-same-origin es necesario para que el formulario envíe datos a su propio servidor
-             y no da acceso a esta página porque el origen es distinto. -->
-        <iframe
-          id="formulario"
-          title="Formulario para solicitar información"
-          loading="lazy"
-          referrerpolicy="strict-origin-when-cross-origin"
-          sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
-          allow=""
-          data-src=""></iframe>
-        <p class="alternativa">¿No ves el formulario? <a id="enlace-form" href="#" target="_blank" rel="noopener noreferrer">Ábrelo en una pestaña nueva</a>.</p>
+      <div class="tarjeta-form">
+        <!-- n8n Cloud no permite mostrar sus formularios dentro de otra web (protección contra
+             clickjacking), por eso el formulario se abre en una pestaña aparte. -->
+        <h3>Formulario de solicitud</h3>
+        <p>Toma menos de un minuto. Se abre en una pestaña nueva, en el servidor seguro donde se procesa tu solicitud.</p>
+        <ul class="campos">
+          <li>Nombre y correo electrónico</li>
+          <li>Empresa y cargo</li>
+          <li>Teléfono, si quieres que te llamemos</li>
+          <li>Los servicios que te interesan</li>
+          <li>Un mensaje opcional</li>
+        </ul>
+        <a id="enlace-form" class="boton boton-ocre" href="#" target="_blank" rel="noopener noreferrer">
+          Abrir el formulario
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+        </a>
+        <p class="nota-form">Al terminar, revisa tu bandeja de entrada y la carpeta de spam.</p>
       </div>
     </div>
   </section>
@@ -394,15 +403,13 @@ section { padding: 5rem 0; }
 
   /* Formulario */
   var form = urlSegura(CONFIG.formUrl);
-  var iframe = document.getElementById('formulario');
   var enlace = document.getElementById('enlace-form');
   if (form) {
-    iframe.src = form;
     enlace.href = form;
   } else {
-    iframe.remove();
-    enlace.textContent = 'El formulario no está disponible en este momento';
+    enlace.textContent = 'El formulario no está disponible. Usa el asistente.';
     enlace.removeAttribute('href');
+    enlace.removeAttribute('target');
   }
 
   /* Correo armado en el navegador para dificultar que los bots lo copien */
