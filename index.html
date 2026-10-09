@@ -1,1 +1,461 @@
+<!doctype html>
+<html lang="es-PE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  SEGURIDAD
+  - Content-Security-Policy: solo permite cargar recursos de los orígenes listados.
+    Si cambias la URL de n8n, actualízala aquí (connect-src y frame-src).
+  - El script propio está autorizado por su hash (sha256). Si editas el script final de
+    la página, hay que recalcular el hash o el navegador lo bloqueará.
+-->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Opd1GnR1etIObkNDl25zOrVo2hp0P2R2thKFqIMhPL8=' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://proyecto-agente.app.n8n.cloud; frame-src https://proyecto-agente.app.n8n.cloud; base-uri 'none'; form-action 'none'; object-src 'none'; manifest-src 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="format-detection" content="telephone=no">
+<title>Yuri Guerra · AI Agente Consulting</title>
+<meta name="description" content="Consultoría de IA, masterclass y conferencia sobre agentes de inteligencia artificial para empresas en Lima y todo el Perú.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230F3D3A'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23D9A21B'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@n8n/chat@1.40.0/dist/style.css" integrity="sha384-KKWibweEDOcYb5iYeaSnJjHWnp/Zb4FeNkjGF486IXxEpP1ZicwAZTohajaJx4Yb" crossorigin="anonymous" referrerpolicy="no-referrer">
+<style>
+:root {
+  --pino: #0F3D3A;
+  --pino-2: #175651;
+  --papel: #F3F5F2;
+  --blanco: #FFFFFF;
+  --tinta: #142624;
+  --gris: #4F605D;
+  --linea: #D3DCD9;
+  --ocre: #D9A21B;
+  --ocre-claro: #F6E7BE;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --texto: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --ancho: 72rem;
 
+  /* Chat de n8n con los colores de la marca */
+  --chat--color--primary: #0F3D3A;
+  --chat--color--primary-shade-50: #175651;
+  --chat--color--primary--shade-100: #0A2B29;
+  --chat--color--secondary: #D9A21B;
+  --chat--color-secondary-shade-50: #C08E12;
+  --chat--color-dark: #142624;
+  --chat--font-family: "Atkinson Hyperlegible", system-ui, sans-serif;
+  --chat--header--background: #0F3D3A;
+  --chat--header--color: #FFFFFF;
+  --chat--toggle--background: #0F3D3A;
+  --chat--toggle--hover--background: #175651;
+  --chat--toggle--active--background: #0A2B29;
+  --chat--message--bot--background: #F3F5F2;
+  --chat--message--bot--color: #142624;
+  --chat--message--user--background: #0F3D3A;
+  --chat--message--user--color: #FFFFFF;
+  --chat--window--width: 380px;
+  --chat--window--height: 600px;
+  --chat--border-radius: 14px;
+  --chat--heading--font-size: 1.3rem;
+  --chat--subtitle--font-size: .95rem;
+  --chat--subtitle--line-height: 1.4;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; animation: none !important; } }
+body {
+  margin: 0;
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: var(--texto);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+img { max-width: 100%; }
+a { color: var(--pino); text-underline-offset: 3px; }
+a:hover { color: var(--pino-2); }
+:focus-visible { outline: 3px solid var(--ocre); outline-offset: 3px; border-radius: 4px; }
+.salto { position: absolute; left: -9999px; top: 0; background: var(--ocre); color: var(--tinta); padding: .75rem 1rem; z-index: 100; }
+.salto:focus { left: 1rem; top: 1rem; }
+.envoltura { width: 100%; max-width: var(--ancho); margin: 0 auto; padding: 0 1.25rem; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.08; margin: 0; letter-spacing: -0.02em; }
+h2 { font-size: clamp(1.9rem, 4vw, 2.75rem); font-weight: 800; max-width: 20ch; }
+p { margin: 0 0 1rem; max-width: 62ch; }
+
+/* Botones */
+.boton {
+  display: inline-flex; align-items: center; gap: .6rem;
+  font-family: var(--display); font-weight: 700; font-size: 1.05rem;
+  padding: .85rem 1.35rem; border-radius: 999px; border: 2px solid transparent;
+  text-decoration: none; cursor: pointer; line-height: 1.2;
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+.boton-ocre { background: var(--ocre); color: var(--tinta); }
+.boton-ocre:hover { background: #E8B42F; color: var(--tinta); }
+.boton-claro { background: transparent; color: var(--blanco); border-color: rgba(255,255,255,.55); }
+.boton-claro:hover { background: rgba(255,255,255,.1); color: var(--blanco); border-color: var(--blanco); }
+.boton-pino { background: var(--pino); color: var(--blanco); }
+.boton-pino:hover { background: var(--pino-2); color: var(--blanco); }
+.boton svg { width: 1.2em; height: 1.2em; flex: none; }
+
+/* Cabecera */
+.cabecera { background: var(--pino); color: var(--blanco); }
+.barra { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-top: 1.1rem; padding-bottom: 1.1rem; }
+.marca { color: var(--blanco); text-decoration: none; font-family: var(--display); font-weight: 700; font-size: 1.15rem; line-height: 1.15; }
+.marca span { display: block; font-family: var(--texto); font-weight: 400; font-size: .85rem; opacity: .8; }
+.marca:hover { color: var(--blanco); }
+.menu { display: flex; gap: 1.5rem; list-style: none; margin: 0; padding: 0; }
+.menu a { color: var(--blanco); text-decoration: none; opacity: .9; }
+.menu a:hover { opacity: 1; text-decoration: underline; color: var(--blanco); }
+@media (max-width: 720px) { .menu { display: none; } }
+
+/* Portada */
+.portada { display: grid; grid-template-columns: 1.15fr 1fr; gap: 3.5rem; align-items: center; padding-top: 3.5rem; padding-bottom: 5rem; }
+.portada h1 { font-size: clamp(2.6rem, 6.4vw, 5rem); font-weight: 800; max-width: 13ch; }
+.portada .bajada { font-size: 1.2rem; color: rgba(255,255,255,.88); margin: 1.5rem 0 2rem; max-width: 46ch; }
+.acciones { display: flex; flex-wrap: wrap; gap: .75rem; }
+@media (max-width: 880px) { .portada { grid-template-columns: 1fr; gap: 2.5rem; padding-bottom: 3.5rem; } }
+
+/* Conversación de ejemplo */
+.dialogo { margin: 0; background: var(--papel); color: var(--tinta); border-radius: 22px; padding: 1.25rem; box-shadow: 0 30px 60px -30px rgba(0,0,0,.55); }
+.dialogo-cabeza { display: flex; align-items: center; gap: .65rem; padding: .25rem .25rem 1rem; border-bottom: 1px solid var(--linea); margin-bottom: 1rem; }
+.dialogo-cabeza .punto { width: .7rem; height: .7rem; border-radius: 50%; background: #2E9B6A; box-shadow: 0 0 0 4px rgba(46,155,106,.18); }
+.dialogo-cabeza strong { font-family: var(--display); }
+.dialogo-cabeza small { color: var(--gris); margin-left: auto; font-size: .85rem; }
+.globo { max-width: 86%; padding: .8rem 1rem; border-radius: 16px; margin-bottom: .7rem; font-size: 1rem; line-height: 1.5; }
+.globo-visita { margin-left: auto; background: var(--pino); color: var(--blanco); border-bottom-right-radius: 4px; }
+.globo-agente { background: var(--blanco); border: 1px solid var(--linea); border-bottom-left-radius: 4px; }
+.dialogo figcaption { font-size: .85rem; color: var(--gris); padding: .5rem .25rem 0; }
+.dialogo button { margin-top: .5rem; }
+.escribiendo { display: inline-flex; gap: 4px; padding: .9rem 1rem; background: var(--blanco); border: 1px solid var(--linea); border-radius: 16px; border-bottom-left-radius: 4px; }
+.escribiendo i { width: 7px; height: 7px; border-radius: 50%; background: var(--gris); opacity: .4; animation: latido 1.2s infinite; }
+.escribiendo i:nth-child(2) { animation-delay: .2s; }
+.escribiendo i:nth-child(3) { animation-delay: .4s; }
+@keyframes latido { 0%, 60%, 100% { opacity: .3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-3px); } }
+
+/* Secciones */
+section { padding: 5rem 0; }
+.intro-seccion { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: end; margin-bottom: 3rem; }
+.intro-seccion p { color: var(--gris); margin: 0; }
+@media (max-width: 760px) { .intro-seccion { grid-template-columns: 1fr; } }
+
+/* Servicios en filas */
+.servicios { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--tinta); }
+.servicio { display: grid; grid-template-columns: 9rem 1fr 18rem; gap: 2rem; padding: 2.25rem 0; border-bottom: 1px solid var(--linea); align-items: start; }
+.cuando { font-family: var(--display); line-height: 1; }
+.cuando .dia { display: block; font-size: 3.6rem; font-weight: 800; color: var(--pino); letter-spacing: -0.04em; }
+.cuando .mes { display: block; font-size: 1.1rem; font-weight: 700; margin-top: .35rem; }
+.cuando .hora { display: block; font-family: var(--texto); font-size: .9rem; color: var(--gris); margin-top: .35rem; }
+.cuando .abierto { display: inline-block; font-size: 1.05rem; font-weight: 700; background: var(--ocre-claro); color: var(--tinta); padding: .45rem .7rem; border-radius: 8px; line-height: 1.25; }
+.servicio h3 { font-size: clamp(1.5rem, 2.6vw, 2rem); font-weight: 700; margin-bottom: .35rem; }
+.servicio .tema { font-family: var(--display); font-weight: 500; font-size: 1.15rem; color: var(--pino-2); margin-bottom: .75rem; max-width: 40ch; }
+.servicio p { color: var(--tinta); }
+.datos { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: .45rem 1rem; font-size: .98rem; }
+.datos dt { color: var(--gris); }
+.datos dd { margin: 0; font-weight: 700; }
+.servicio .boton { margin-top: 1.25rem; padding: .6rem 1rem; font-size: .98rem; }
+@media (max-width: 920px) {
+  .servicio { grid-template-columns: 7rem 1fr; }
+  .servicio .lateral { grid-column: 2; }
+}
+@media (max-width: 560px) {
+  .servicio { grid-template-columns: 1fr; gap: 1rem; }
+  .servicio .lateral { grid-column: auto; }
+  .cuando .dia { font-size: 2.8rem; display: inline; }
+  .cuando .mes { display: inline; margin-left: .4rem; }
+}
+
+/* Proceso */
+.proceso-fondo { background: var(--blanco); border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); }
+.pasos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; counter-reset: paso; }
+.pasos li { counter-increment: paso; position: relative; padding-top: 3.4rem; }
+.pasos li::before { content: counter(paso); position: absolute; top: 0; left: 0; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: var(--ocre); font-family: var(--display); font-weight: 800; font-size: 1.15rem; display: grid; place-items: center; }
+.pasos h3 { font-size: 1.3rem; margin-bottom: .5rem; }
+.pasos p { color: var(--gris); margin: 0; }
+@media (max-width: 760px) { .pasos { grid-template-columns: 1fr; gap: 2rem; } }
+
+/* Formulario */
+.solicitud { display: grid; grid-template-columns: 1fr 1.35fr; gap: 3rem; align-items: start; }
+.solicitud .lado p { color: var(--gris); }
+.marco-form { background: var(--blanco); border: 1px solid var(--linea); border-radius: 18px; overflow: hidden; }
+.marco-form iframe { display: block; width: 100%; height: 1180px; border: 0; }
+.alternativa { font-size: .95rem; padding: .9rem 1.1rem; border-top: 1px solid var(--linea); background: var(--papel); margin: 0; max-width: none; }
+.lista-datos { padding-left: 1.2rem; margin: 0 0 1rem; color: var(--gris); }
+.lista-datos li { margin-bottom: .35rem; }
+@media (max-width: 880px) { .solicitud { grid-template-columns: 1fr; } .marco-form iframe { height: 1300px; } }
+
+/* Pie */
+.pie { background: var(--tinta); color: rgba(255,255,255,.85); padding: 3rem 0; font-size: .95rem; }
+.pie .envoltura { display: flex; flex-wrap: wrap; gap: 1.5rem 3rem; justify-content: space-between; }
+.pie a { color: var(--blanco); }
+.pie strong { font-family: var(--display); color: var(--blanco); font-size: 1.1rem; }
+.pie p { margin: .25rem 0; }
+</style>
+</head>
+<body>
+<a class="salto" href="#contenido">Saltar al contenido</a>
+
+<header class="cabecera">
+  <nav class="envoltura barra" aria-label="Principal">
+    <a class="marca" href="#">Yuri Guerra<span>AI Agente Consulting</span></a>
+    <ul class="menu">
+      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#solicitar">Solicitar información</a></li>
+      <li><a href="privacidad.html">Privacidad</a></li>
+    </ul>
+  </nav>
+
+  <div class="envoltura portada">
+    <div>
+      <h1>Agentes de IA que trabajan dentro de tu empresa</h1>
+      <p class="bajada">Diseño e implemento asistentes de inteligencia artificial que atienden clientes, ordenan información y automatizan tareas repetitivas. También enseño a hacerlo, en una masterclass y una conferencia.</p>
+      <div class="acciones">
+        <button type="button" class="boton boton-ocre" data-abrir-chat>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Conversar con el asistente
+        </button>
+        <a class="boton boton-claro" href="#solicitar">Recibir información por correo</a>
+      </div>
+    </div>
+
+    <figure class="dialogo" aria-label="Ejemplo de conversación con el asistente">
+      <div class="dialogo-cabeza">
+        <span class="punto" aria-hidden="true"></span>
+        <strong>Asistente de Yuri Guerra</strong>
+        <small>Responde al momento</small>
+      </div>
+      <p class="globo globo-visita">¿Cuándo es la masterclass y cuánto cuesta?</p>
+      <p class="globo globo-agente">El jueves 12 de noviembre a las 7:00 p. m., hora de Lima, por Zoom. Dura 2 horas y la inversión es S/ 150. ¿Te envío la información completa a tu correo?</p>
+      <p class="globo globo-visita">Sí, por favor.</p>
+      <span class="escribiendo" aria-hidden="true"><i></i><i></i><i></i></span>
+      <figcaption>Así responde el asistente de esta página. Pruébalo con tus propias preguntas.</figcaption>
+      <button type="button" class="boton boton-pino" data-abrir-chat>Hacer una pregunta</button>
+    </figure>
+  </div>
+</header>
+
+<main id="contenido">
+  <section id="servicios">
+    <div class="envoltura">
+      <div class="intro-seccion">
+        <h2>Tres formas de llevar la IA a tu trabajo</h2>
+        <p>Elige según lo que necesites: que lo construyamos contigo, aprender a hacerlo en dos horas o conocer hacia dónde va la automatización inteligente.</p>
+      </div>
+
+      <ul class="servicios">
+        <li class="servicio">
+          <div class="cuando"><span class="abierto">Agenda abierta</span></div>
+          <div>
+            <h3>Consultoría de IA</h3>
+            <p class="tema">Agentes de IA a la medida de tus procesos</p>
+            <p>Identificamos dónde la inteligencia artificial puede ahorrar tiempo y costos en tu empresa, y diseñamos e implementamos agentes de IA a la medida de tus procesos.</p>
+          </div>
+          <div class="lateral">
+            <dl class="datos">
+              <dt>Modalidad</dt><dd>Virtual o presencial</dd>
+              <dt>Lugar</dt><dd>Lima</dd>
+              <dt>Duración</dt><dd>Según alcance</dd>
+              <dt>Inversión</dt><dd>A cotizar. Diagnóstico inicial de 45 min gratuito</dd>
+            </dl>
+            <a class="boton boton-pino" href="#solicitar">Pedir información</a>
+          </div>
+        </li>
+
+        <li class="servicio">
+          <div class="cuando">
+            <span class="dia">12</span><span class="mes">noviembre</span><span class="hora">Jueves, 7:00 p. m.</span>
+          </div>
+          <div>
+            <h3>Masterclass</h3>
+            <p class="tema">Agentes de IA para tu negocio: de la idea a la automatización</p>
+            <p>Aprenderás a diseñar un agente de IA, conectarlo con tus herramientas y automatizar tareas repetitivas sin programar.</p>
+          </div>
+          <div class="lateral">
+            <dl class="datos">
+              <dt>Modalidad</dt><dd>Virtual por Zoom</dd>
+              <dt>Duración</dt><dd>2 horas</dd>
+              <dt>Hora</dt><dd>7:00 p. m. (Lima)</dd>
+              <dt>Inversión</dt><dd>S/ 150</dd>
+            </dl>
+            <a class="boton boton-pino" href="#solicitar">Pedir información</a>
+          </div>
+        </li>
+
+        <li class="servicio">
+          <div class="cuando">
+            <span class="dia">3</span><span class="mes">diciembre</span><span class="hora">Jueves, 6:30 p. m.</span>
+          </div>
+          <div>
+            <h3>Conferencia</h3>
+            <p class="tema">El futuro del trabajo con agentes de IA</p>
+            <p>Casos reales, tendencias y cómo preparar a tu organización para la nueva ola de automatización inteligente.</p>
+          </div>
+          <div class="lateral">
+            <dl class="datos">
+              <dt>Modalidad</dt><dd>Presencial con transmisión en vivo</dd>
+              <dt>Lugar</dt><dd>Lima (sede por confirmar)</dd>
+              <dt>Presencial</dt><dd>S/ 250</dd>
+              <dt>Virtual</dt><dd>S/ 120</dd>
+            </dl>
+            <a class="boton boton-pino" href="#solicitar">Pedir información</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="proceso-fondo" aria-labelledby="titulo-proceso">
+    <div class="envoltura">
+      <div class="intro-seccion">
+        <h2 id="titulo-proceso">Qué pasa cuando pides información</h2>
+        <p>Sin llamadas inesperadas ni listas de difusión. Solo recibes lo que pediste.</p>
+      </div>
+      <ol class="pasos">
+        <li>
+          <h3>Eliges el servicio</h3>
+          <p>Desde el formulario o conversando con el asistente. Puedes elegir uno, dos o los tres.</p>
+        </li>
+        <li>
+          <h3>Recibes un correo</h3>
+          <p>Te llega al momento la información completa de cada servicio: fechas, modalidad, inversión y cómo inscribirte.</p>
+        </li>
+        <li>
+          <h3>Yuri te contacta</h3>
+          <p>Si quieres avanzar, coordinamos una reunión. Para darte de baja, basta con responder BAJA.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="solicitar" aria-labelledby="titulo-solicitar">
+    <div class="envoltura solicitud">
+      <div class="lado">
+        <h2 id="titulo-solicitar">Recibe la información en tu correo</h2>
+        <p style="margin-top:1.25rem">Completa el formulario y te enviaremos los detalles de los servicios que elijas. ¿Prefieres preguntar primero?</p>
+        <p><button type="button" class="boton boton-pino" data-abrir-chat>Conversar con el asistente</button></p>
+        <h3 style="font-size:1.15rem;margin:2rem 0 .75rem">Qué hacemos con tus datos</h3>
+        <ul class="lista-datos">
+          <li>Solo los usamos para enviarte la información y darle seguimiento a tu solicitud.</li>
+          <li>No los vendemos ni los compartimos con fines comerciales.</li>
+          <li>Puedes pedir que los eliminemos cuando quieras.</li>
+        </ul>
+        <p>Detalles en la <a href="privacidad.html">política de privacidad</a>, conforme a la Ley N.° 29733.</p>
+      </div>
+
+      <div class="marco-form">
+        <!-- El formulario vive en n8n (otro dominio). sandbox limita lo que puede hacer el iframe;
+             allow-same-origin es necesario para que el formulario envíe datos a su propio servidor
+             y no da acceso a esta página porque el origen es distinto. -->
+        <iframe
+          id="formulario"
+          title="Formulario para solicitar información"
+          loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+          sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+          allow=""
+          data-src=""></iframe>
+        <p class="alternativa">¿No ves el formulario? <a id="enlace-form" href="#" target="_blank" rel="noopener noreferrer">Ábrelo en una pestaña nueva</a>.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="pie">
+  <div class="envoltura">
+    <div>
+      <strong>Yuri Guerra · AI Agente Consulting</strong>
+      <p>Lima, Perú</p>
+    </div>
+    <div>
+      <p>Correo: <a id="correo" href="#">escríbenos</a></p>
+      <p><a href="privacidad.html">Política de privacidad</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@n8n/chat@1.40.0/dist/chat.bundle.umd.js" integrity="sha384-S33sWo9dnxmzeCG655Hi9/hV7lpfhNU+B7zankbIUMWnQtG4vvFiEQeixLgqSBFH" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* Configuración: cambia solo estas líneas si cambian tus URLs de n8n */
+  var CONFIG = {
+    formUrl: 'https://proyecto-agente.app.n8n.cloud/form/37eea4d7-150d-4143-9ca3-058b4faf9637',
+    chatUrl: 'https://proyecto-agente.app.n8n.cloud/webhook/8773ed00-7b4d-4783-8c6f-367431c4434b/chat',
+    origenPermitido: 'https://proyecto-agente.app.n8n.cloud'
+  };
+
+  /* Solo se aceptan URLs https del dominio de n8n configurado */
+  function urlSegura(u) {
+    try {
+      var url = new URL(u);
+      return url.protocol === 'https:' && url.origin === CONFIG.origenPermitido ? url.href : null;
+    } catch (e) { return null; }
+  }
+
+  /* Formulario */
+  var form = urlSegura(CONFIG.formUrl);
+  var iframe = document.getElementById('formulario');
+  var enlace = document.getElementById('enlace-form');
+  if (form) {
+    iframe.src = form;
+    enlace.href = form;
+  } else {
+    iframe.remove();
+    enlace.textContent = 'El formulario no está disponible en este momento';
+    enlace.removeAttribute('href');
+  }
+
+  /* Correo armado en el navegador para dificultar que los bots lo copien */
+  var c = document.getElementById('correo');
+  var direccion = ['guerrapyuri', 'gmail.com'].join('@');
+  c.href = 'mailto:' + direccion;
+  c.textContent = direccion;
+
+  /* Chatbot */
+  var chat = urlSegura(CONFIG.chatUrl);
+  function abrirChat() {
+    var boton = document.querySelector('.chat-window-toggle');
+    var ventana = document.querySelector('.chat-window');
+    var abierta = ventana && ventana.offsetParent !== null;
+    if (boton && !abierta) boton.click();
+    if (!boton) window.location.hash = '#solicitar';
+  }
+  document.querySelectorAll('[data-abrir-chat]').forEach(function (b) {
+    b.addEventListener('click', abrirChat);
+  });
+
+  if (chat && window.N8nChat && typeof window.N8nChat.createChat === 'function') {
+    window.N8nChat.createChat({
+      webhookUrl: chat,
+      webhookConfig: { method: 'POST', headers: {} },
+      mode: 'window',
+      chatInputKey: 'chatInput',
+      chatSessionKey: 'sessionId',
+      loadPreviousSession: false,
+      showWelcomeScreen: false,
+      allowFileUploads: false,
+      defaultLanguage: 'en',
+      initialMessages: [
+        '¡Hola! Soy el asistente de Yuri Guerra · AI Agente Consulting.',
+        '¿Te interesa la Consultoría de IA, la Masterclass o la Conferencia?'
+      ],
+      i18n: {
+        en: {
+          title: 'Asistente de Yuri Guerra',
+          subtitle: 'Consultoría de IA, Masterclass y Conferencia',
+          footer: '',
+          getStarted: 'Nueva conversación',
+          inputPlaceholder: 'Escribe tu pregunta…',
+          closeButtonTooltip: 'Cerrar'
+        }
+      }
+    });
+  } else {
+    document.querySelectorAll('[data-abrir-chat]').forEach(function (b) {
+      b.setAttribute('title', 'El asistente no está disponible; usa el formulario.');
+    });
+  }
+})();
+</script>
+</body>
+</html>
